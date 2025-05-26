@@ -7,6 +7,9 @@ import Geolocation, {
 } from 'react-native-geolocation-service';
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
+import RNFS from 'react-native-fs';
+import Share from 'react-native-share';
+
 export interface Location extends GeoCoordinates {
   timestamp?: string;
 }
@@ -19,12 +22,12 @@ export const useLocationMonitor = () => {
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-      );
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
+      const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+      const backgroundGranted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION);
+
+      return granted === PermissionsAndroid.RESULTS.GRANTED && backgroundGranted === PermissionsAndroid.RESULTS.GRANTED;
     } else {
-      const result = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+      const result = await request(PERMISSIONS.IOS.LOCATION_ALWAYS);
       return result === RESULTS.GRANTED;
     }
   };
@@ -98,6 +101,38 @@ export const useLocationMonitor = () => {
     setRecordingStatus(false);
   }
 
+  const exportHistory = async () => {
+    if (history.length === 0 || !position || isRecording) {
+      console.warn('No location history to export. Or monitoring is still active.');
+      return null;
+    }
+
+    const csvHeader = 'latitude,longitude,accuracy,altitude,heading,speed,altitudeAccuracy,timestamp';
+    const csvRows = history.map(loc => 
+      `${loc.latitude},${loc.longitude},${loc.accuracy},${loc.altitude || ''},${loc.heading || ''},${loc.speed || ''},${loc.altitudeAccuracy || ''},${loc.timestamp}`
+    );
+    const csvString = [csvHeader, ...csvRows].join('\n');
+
+    const time = new Date().getTime();
+    const fileName = `FlightRecord_${time}.csv`;
+    const filePath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+
+    await RNFS.writeFile(filePath, csvString, 'utf8').catch((error) => {
+      return console.error('Error writing file:', error);
+    });
+
+    await Share.open({
+      url: `file://${filePath}`,
+      type: 'text/csv',
+      filename: fileName,
+      failOnCancel: false,
+    }).catch((error) => {
+      return console.error('Error sharing file:', error);
+    });
+
+    return true;
+  }
+
   return {
     position,
     startMonitoring,
@@ -105,5 +140,6 @@ export const useLocationMonitor = () => {
     resetHistory,
     history,
     isRecording,
+    exportHistory
   };
 };

@@ -17,7 +17,7 @@ import { checkPermissions, useLocationMonitor, calc } from './utils/index';
 import { colors, styles } from './styles';
 
 function App(): React.JSX.Element {
-  const { position, startMonitoring, stopMonitoring, resetHistory, history, isRecording} = useLocationMonitor();
+  const { position, startMonitoring, stopMonitoring, resetHistory, history, isRecording, exportHistory } = useLocationMonitor();
 
   useEffect(() => {
     checkPermissions();
@@ -91,7 +91,7 @@ function App(): React.JSX.Element {
 
         <View style={{...styles.buttonContainer, marginTop: '5%'}}>
           <TouchableOpacity 
-            onPress={() => {}} 
+            onPress={exportHistory} 
             disabled={(isRecording || history.length === 0)} 
             style={{...styles.baseButton, marginRight: '2%', width: '29%', opacity: (isRecording || history.length === 0) ? 0.5 : 1 }}>
             <Text style={{...styles.baseButtonText}}>Export</Text>
@@ -115,33 +115,5 @@ function App(): React.JSX.Element {
     </SafeAreaProvider>
   );
 }
-
-/**
-{location ? (
-        <View style={styles.mapBox}>
-          <MapView
-            ref={mapRef}
-            style={styles.map}
-            initialRegion={{
-              latitude: location.latitude,
-              longitude: location.longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }}
-            scrollEnabled={false}
-            zoomEnabled={false}
-            rotateEnabled={false}
-            pitchEnabled={false}
-            showsUserLocation={true}
-            followsUserLocation={true}
-            showsPointsOfInterest={false}
-            showsMyLocationButton={false}
-            >
-          </MapView>
-        </View>
-      ) : (
-        <Text style={{color: '#FFFFFF'}}>Loading location...</Text>
-      )}
- */
 
 export default App;
