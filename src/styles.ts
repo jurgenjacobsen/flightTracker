@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
         padding: '5%',
     },
     headerContainer: {
-        marginTop: '5%',
+        marginTop: '10%',
     },
     headerAppSubtitle: {
         fontSize: 16,
@@ -55,25 +55,46 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
     },
-    mapContainer: {
-        marginTop: '5%',
+    infoContainer: {
+        marginTop: '15%',
         borderRadius: 5,
         width: '90%',
-        height: '40%',
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: colors.BORDER,
         backgroundColor: colors.SECONDARY,
-        alignContent: 'center',
+    },
+    infoRow: {
+        padding: 10,
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+    },
+    infoChild: {
+        width: '30%',
         justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 10,
+    },
+    infoChildText: {
+        color: colors.TEXT,
+        opacity: 0.25,
+        fontFamily: 'Inter',
+        fontSize: 14,
+    },
+    infoChildValue: {
+        color: colors.TEXT,
+        fontFamily: 'Inter',
+        fontSize: 20,
     },
     buttonContainer: {
+        marginTop: '5%',
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
     historyContainer: {
         width: '90%',
         height: '20%',
+        marginTop: '5%',
         borderRadius: 5,
         backgroundColor: colors.SECONDARY,
         borderColor: colors.BORDER,
@@ -103,6 +124,12 @@ export const styles = StyleSheet.create({
         fontFamily: 'Inter',
         fontSize: 10,
         width: '22.5%',
-        
     },
+    historyContentWarn: {
+        marginTop: '10%',
+        color: colors.TEXT,
+        opacity: 0.1,
+        fontFamily: 'Inter',
+        fontSize: 16,
+    }
 });

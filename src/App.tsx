@@ -36,19 +36,71 @@ function App(): React.JSX.Element {
           </Text>
         </View>
 
-        <View style={styles.mapContainer}>
-          { position ? (
-            <Text>
-              Lat: {position.latitude}, Lon: {position.longitude}
+        <View style={styles.infoContainer}>
+          <View style={styles.infoRow}>
+            <View style={styles.infoChild}>
+              <Text style={styles.infoChildText}>Latitude</Text>
+              <Text style={styles.infoChildValue}>{position?.latitude ? calc.formatCoord(position.latitude, position.longitude, 'LAT') : ' '}</Text>
+            </View>
+            <View style={styles.infoChild}>
+              <Text style={styles.infoChildText}>Longitude</Text>
+              <Text style={styles.infoChildValue}>{position?.longitude ? calc.formatCoord(position.latitude, position.longitude, 'LON') : ' '}</Text>
+            </View>
+            <View style={styles.infoChild}>
+              <Text style={styles.infoChildText}>Altitude</Text>
+              <Text style={styles.infoChildValue}>
+              {position?.altitude ? (
+                <>
+                  {position.altitude.toFixed(0)}
+                  <Text style={{ color: colors.TEXT_LIGHT }}>ft</Text>
+                </>
+              ) : (
+                ' '
+              )}
             </Text>
-          ) : (
-            <Text style={{ color: 'red',textAlign: 'center',  padding: 20, fontSize: 16, fontFamily: 'Inter' }}>
-              Map is not available. First start your recording.
-            </Text>
-          )}
+            </View>
+          </View>
+
+          <View style={styles.infoRow}>
+            <View style={styles.infoChild}>
+              <Text style={styles.infoChildText}>Speed</Text>
+              <Text style={styles.infoChildValue}>
+                {position?.speed ? (
+                  <>
+                    {calc.speedMsToKt(position.speed ?? 0).toFixed(0)}
+                    <Text style={{ color: colors.TEXT_LIGHT }}>kt</Text>
+                  </>
+                ) : (
+                  ' '
+                )}
+              </Text>
+            </View>
+            <View style={styles.infoChild}>
+              <Text style={styles.infoChildText}>Heading</Text>
+              <Text style={styles.infoChildValue}>
+                {history.length > 1 ? 
+                calc.calculateTrack(history[1].latitude, history[1].longitude, history[0].latitude, history[0].longitude) : ' ' }
+              </Text>
+            </View>
+            <View style={styles.infoChild}>
+              <Text style={styles.infoChildText}>Last update</Text>
+              <Text style={styles.infoChildValue}>{position?.timestamp ? calc.formatTimeFromISO(position.timestamp) : ' '}</Text>
+            </View>
+          </View>
+              
+          <View style={styles.infoRow}>
+            <View style={{...styles.infoChild, width: '45%'}}>
+              <Text style={styles.infoChildText}>Position Accuracy</Text>
+              <Text style={styles.infoChildValue}>{position?.accuracy.toFixed(0)}</Text>
+            </View>
+            <View style={{...styles.infoChild, width: '45%'}}>
+              <Text style={styles.infoChildText}>Altitude Accuracy</Text>
+              <Text style={styles.infoChildValue}>{position?.altitudeAccuracy?.toFixed(0) || ' '}</Text>
+            </View>
+          </View>
         </View>
 
-        <View style={{...styles.buttonContainer, marginTop: '5%'}}>
+        <View style={styles.buttonContainer}>
           <TouchableOpacity 
             onPress={startMonitoring} 
             disabled={isRecording} 
@@ -64,7 +116,7 @@ function App(): React.JSX.Element {
           </TouchableOpacity>
         </View>
 
-        <View style={{...styles.historyContainer, marginTop: '5%'}}>
+        <View style={styles.historyContainer}>
           <View style={styles.historyHeader}>
             <Text style={styles.historyHeaderChild}>Position</Text>
             <Text style={styles.historyHeaderChild}>Altitude</Text>
@@ -75,21 +127,23 @@ function App(): React.JSX.Element {
           {history.length > 0 ? (
               history.sort((a, b) => (new Date(b.timestamp  ?? '').getTime()) - (new Date(a.timestamp  ?? '').getTime())).map((l, index) => (
                 <View key={index} style={styles.historyContent}>
-                  <Text style={styles.historyContentChild}>{calc.formatLatLong(l.latitude, l.longitude)}</Text>
-                  <Text style={styles.historyContentChild}>{l.altitude ? l.altitude.toFixed(0) : 'N/A'}</Text>
+                  <Text style={styles.historyContentChild}>{calc.formatCoord(l.latitude, l.longitude)}</Text>
+                  <Text style={styles.historyContentChild}>{l.altitude ? l.altitude.toFixed(0) : 'N/A'}<Text style={{color: colors.TEXT_LIGHT}}>ft</Text></Text>
                   <Text style={styles.historyContentChild}>{l.speed ? calc.speedMsToKt(l.speed ?? 0).toFixed(0) : 'N/A'}<Text style={{color: colors.TEXT_LIGHT}}>kt</Text></Text>
                   <Text style={styles.historyContentChild}>{calc.formatTimeFromISO(l.timestamp ?? '')}</Text>
                 </View>
               ))
             ) : (
-              <Text style={{ textAlign: 'center', padding: 10, fontSize: 16, fontFamily: 'Inter' }}>
-                No history available. Start your session to record data.
-              </Text>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={styles.historyContentWarn}>
+                  No history available
+                </Text>
+              </View>
             )}
 
         </View>
 
-        <View style={{...styles.buttonContainer, marginTop: '5%'}}>
+        <View style={styles.buttonContainer}>
           <TouchableOpacity 
             onPress={exportHistory} 
             disabled={(isRecording || history.length === 0)} 

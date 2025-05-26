@@ -22,10 +22,15 @@ export const useLocationMonitor = () => {
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-      const backgroundGranted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION);
+      const granted = await PermissionsAndroid.requestMultiple([
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+      PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
+      ]);
 
-      return granted === PermissionsAndroid.RESULTS.GRANTED && backgroundGranted === PermissionsAndroid.RESULTS.GRANTED;
+      return granted[PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED && 
+      granted[PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION] === PermissionsAndroid.RESULTS.GRANTED &&
+      granted[PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION] === PermissionsAndroid.RESULTS.GRANTED;
     } else {
       const result = await request(PERMISSIONS.IOS.LOCATION_ALWAYS);
       return result === RESULTS.GRANTED;
@@ -54,6 +59,10 @@ export const useLocationMonitor = () => {
         enableHighAccuracy: true,
         distanceFilter: 1,
         timeout: 15000,
+        accuracy: {
+          android: "high",
+          ios: "best",
+        }
     });
 
     watchId.current = Geolocation.watchPosition(
@@ -74,9 +83,13 @@ export const useLocationMonitor = () => {
       (err: GeoError) => console.error('Location Error:', err),
       {
         enableHighAccuracy: true,
-        distanceFilter: 1,
-        interval: 5000,
+        interval: 3000,
         fastestInterval: 2500,
+        accuracy: {
+          android: "high",
+          ios: "best",
+        },
+        distanceFilter: 1,
       }
     );
 

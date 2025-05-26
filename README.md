@@ -16,7 +16,7 @@ A basic offline mobile app built to record essential flight data for post-flight
 - React Native
 
 ## Roadmap / Ideas
-- [ ] Export logs to CSV/GPX
+- [X] Export logs to CSV
 - [ ] Flight path map preview
 - [ ] Simple logbook-style flight summaries
 - [ ] Cloud upload
