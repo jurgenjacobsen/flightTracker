@@ -12,6 +12,8 @@
   "dependencies": {
     "react": "19.0.0",
     "react-native": "0.79.2",
+    "react-native-background-actions": "^4.0.1",
+    "react-native-battery-optimization-check": "^1.0.8",
     "react-native-fs": "^2.20.0",
     "react-native-geolocation-service": "^5.3.1",
     "react-native-permissions": "^5.4.0",

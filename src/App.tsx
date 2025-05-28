@@ -9,18 +9,26 @@ import React, { useEffect } from 'react';
 import {
   Text,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert,
+  Platform
 } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { checkPermissions, useLocationMonitor, calc } from './utils/index';
+import BackgroundService from 'react-native-background-actions';
+import { useLocationMonitor, calc } from './utils/index';
 import { colors, styles } from './styles';
+import { checkDeviceSetup } from './utils/checkPermissions';
 
 function App(): React.JSX.Element {
   const { position, startMonitoring, stopMonitoring, resetHistory, history, isRecording, exportHistory } = useLocationMonitor();
-
+  
   useEffect(() => {
-    checkPermissions();
+    checkDeviceSetup();
+
+    if(BackgroundService.isRunning()) {
+      BackgroundService.stop();
+    }
   }, []);
 
   return (
