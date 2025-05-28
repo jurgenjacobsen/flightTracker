@@ -18,10 +18,10 @@ export async function checkDeviceSetup() {
         if(batteryIsOpt) {
             Alert.alert(
                 'Battery Optimization',
-                'Please disable battery optimization for this app. If battery optimization is enabled, the app will not function properly when running in the background.',
+                'If battery optimization is enabled, the app will not function properly when running in the background.',
                 [
                     {
-                        text: 'Cancel',
+                        text: 'Ok',
                         style: 'cancel',
                     },
                     {

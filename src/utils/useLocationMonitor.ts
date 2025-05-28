@@ -2,10 +2,10 @@ import { useState, useRef } from 'react';
 import Geolocation, { GeoError, GeoCoordinates } from 'react-native-geolocation-service';
 import BackgroundService from 'react-native-background-actions';
 
-import { Vibration } from 'react-native';
+import { Alert, Linking, Vibration } from 'react-native';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
-import { checkPermissions } from './checkPermissions';
+import { checkDeviceSetup, checkPermissions } from './checkPermissions';
 import { colors } from '../styles';
 
 export interface Location extends GeoCoordinates {
@@ -97,7 +97,27 @@ export const useLocationMonitor = () => {
   const startMonitoring = async () => {
     try {
       console.log('Trying to start background service');
-      await checkPermissions();
+      
+      let hasPermissions = await checkPermissions();
+      if (!hasPermissions) {
+        Alert.alert(
+          'Permissions Required',
+          'This app requires location and notification permissions to function properly. Please enable them in settings.',
+          [
+              {
+                  text: 'Cancel',
+                  style: 'cancel',
+              },
+              {
+                  text: 'Open Settings',
+                  onPress: () => Linking.openSettings(),
+              },
+          ],
+          { cancelable: false }
+       );
+        return;
+      }
+      
       await BackgroundService.start(task, taskOptions);
       console.log('Background service started successfully!');
       setRecordingStatus(true);
