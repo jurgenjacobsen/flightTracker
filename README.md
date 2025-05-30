@@ -1,8 +1,9 @@
-# FlighTracker
-A basic offline mobile app built to record essential flight data for post-flight review and debriefing.
+![Flight Tracker Banner](/assets/banner.png)
+# Fligh Tracker
+A mobile app built to record essential flight data for post-flight review and debriefing.
 
-[![wakatime](https://wakatime.com/badge/user/010adc07-6382-419f-87bc-0b3f507ee495/project/d92074db-4e8f-40c1-bd5a-59cc41f8b7ac.svg)](https://wakatime.com/badge/user/010adc07-6382-419f-87bc-0b3f507ee495/project/d92074db-4e8f-40c1-bd5a-59cc41f8b7ac)
-![Gitmoji](https://img.shields.io/badge/gitmoji-%20😜%20😍-FFDD67.svg)
+![wakatime](https://wakatime.com/badge/user/010adc07-6382-419f-87bc-0b3f507ee495/project/d92074db-4e8f-40c1-bd5a-59cc41f8b7ac.svg?style=flat-square)
+![Gitmoji](https://img.shields.io/badge/gitmoji-%20%E2%9C%88%EF%B8%8F%20%F0%9F%98%8D-191919.svg?style=flat-square)
 
 ## Features
 - GPS-based position tracking.
