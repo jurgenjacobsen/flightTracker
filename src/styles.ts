@@ -48,6 +48,7 @@ export const styles = StyleSheet.create({
         borderColor: colors.BORDER,
         backgroundColor: colors.SECONDARY,
         textAlign: 'center',
+        flex: 1,
     },
     baseButtonText: {
         color: '#FFF',
@@ -90,10 +91,13 @@ export const styles = StyleSheet.create({
         marginTop: '5%',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        width: '90%',
+        alignItems: 'center',
     },
     historyContainer: {
         width: '90%',
         height: '20%',
+        maxHeight: '25%',
         marginTop: '5%',
         borderRadius: 5,
         backgroundColor: colors.SECONDARY,

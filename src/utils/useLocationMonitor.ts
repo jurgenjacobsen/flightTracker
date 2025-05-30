@@ -1,12 +1,13 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import Geolocation, { GeoError, GeoCoordinates } from 'react-native-geolocation-service';
 import BackgroundService from 'react-native-background-actions';
 
-import { Alert, Linking, Vibration } from 'react-native';
+import { Linking, Vibration } from 'react-native';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
-import { checkDeviceSetup, checkPermissions } from './checkPermissions';
+import { checkPermissions } from './checkPermissions';
 import { colors } from '../styles';
+import { AlertService } from './AlertService';
 
 export interface Location extends GeoCoordinates {
   timestamp?: string;
@@ -90,8 +91,6 @@ export const useLocationMonitor = () => {
         }
       }, 2500);
     });
-
-    
   }
 
   const startMonitoring = async () => {
@@ -100,21 +99,15 @@ export const useLocationMonitor = () => {
       
       let hasPermissions = await checkPermissions();
       if (!hasPermissions) {
-        Alert.alert(
-          'Permissions Required',
-          'This app requires location and notification permissions to function properly. Please enable them in settings.',
-          [
-              {
-                  text: 'Cancel',
-                  style: 'cancel',
-              },
-              {
-                  text: 'Open Settings',
-                  onPress: () => Linking.openSettings(),
-              },
-          ],
-          { cancelable: false }
-       );
+        AlertService.show({
+          title: 'Permissions Required',
+          message: 'The app requires location and notification permissions to function properly. Please grant the necessary permissions.',
+          confirmText: 'Open Settings',
+          cancelText: 'Cancel',
+          onConfirm: () => {
+            Linking.openSettings().catch(err => console.error('Failed to open settings:', err));
+          }
+        })
         return;
       }
       

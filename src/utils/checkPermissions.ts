@@ -2,6 +2,7 @@ import { Alert, Platform } from 'react-native';
 import { PermissionsAndroid, Linking } from 'react-native';
 // @ts-ignore
 import { BatteryOptEnabled, OpenOptimizationSettings } from "react-native-battery-optimization-check";
+import { AlertService } from './AlertService';
 
 export async function checkBatteryOptimization() {
     try {
@@ -16,40 +17,27 @@ export async function checkDeviceSetup() {
     try {
         const batteryIsOpt = await checkBatteryOptimization();
         if(batteryIsOpt) {
-            Alert.alert(
-                'Battery Optimization',
-                'If battery optimization is enabled, the app will not function properly when running in the background.',
-                [
-                    {
-                        text: 'Ok',
-                        style: 'cancel',
-                    },
-                    {
-                        text: 'Open Settings',
-                        onPress: () => OpenOptimizationSettings(),
-                    },
-                ],
-                { cancelable: true }
-            );
+            AlertService.show({
+                title: 'Battery Optimization',
+                message: 'If battery optimization is enabled, the app will not function properly when running in the background.',
+                confirmText: 'Open Settings',
+                cancelText: 'Ok',
+                onConfirm: () => OpenOptimizationSettings()
+            })
         }
 
         const permissionsGranted = await checkPermissions();
         if (!permissionsGranted) {
-            Alert.alert(
-                'Permissions Required',
-                'This app requires location and notification permissions to function properly. Please enable them in settings.',
-                [
-                    {
-                        text: 'Cancel',
-                        style: 'cancel',
-                    },
-                    {
-                        text: 'Open Settings',
-                        onPress: () => Linking.openSettings(),
-                    },
-                ],
-                { cancelable: false }
-            );
+            AlertService.show({
+                title: 'Permissions Required',
+                message: 'The app requires location and notification permissions to function properly. Please grant the necessary permissions.',
+                confirmText: 'Open Settings',
+                cancelText: 'Ok',
+                onConfirm: () => {
+                    Linking.openSettings().catch(err => console.error('Failed to open settings:', err));
+                }
+            });
+            return false;
         } 
         
     } catch(e) {
